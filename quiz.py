@@ -1,21 +1,23 @@
+from flask import Flask, session, redirect, url_for, render_template, request
 from io import TextIOWrapper
 from _classes import CardList, os, re
 import random
 from datetime import datetime 
 import textwrap
 
-class Quiz:
-    def __init__(self, resources_dir = None) -> None:
-        self.__cardlist = CardList(resources_dir)
-        self.__log_dirname = "wrong_answers"  # the name of the directory where the .txt files with wrong answers will be stored
-        
-        self.__init_questions_per_quiz()        
-        self.__init_show_answer_immediately() 
 
-        self.__create_wrong_answers_directory()
-        
+# quiz.py
+class Quiz:
+    def __init__(self, resources_dir, num_questions=None, show_answer_immediately='y'):
+        self.resources_dir = resources_dir
+        self.num_questions = num_questions
+        self.show_answer_immediately = show_answer_immediately
+        self.__cardlist = CardList(resources_dir)
         self.quiz_cards = self.__generate_quiz()
 
+    def __generate_quiz(self):
+        random.shuffle(self.__cardlist.cards_list)
+        return self.__cardlist.cards_list[:self.num_questions]
 
     def __init_questions_per_quiz(self):
         """
@@ -49,14 +51,6 @@ class Quiz:
                 input("Please pick between 'y'(yes) or 'n'(no): ")
             self.__show_answer_immediately = self.__show_answer_immediately.lower()
 
-
-    def __generate_quiz(self) -> list:
-        """
-            Generate a random list of card objects that are limited by the size of how
-            many questions the player wants to have
-        """
-        random.shuffle(self.__cardlist.cards_list)
-        return self.__cardlist.cards_list[:self.__questions_per_quiz]
 
 
     def __clear(self):
@@ -126,7 +120,7 @@ class Quiz:
         for index, card in enumerate(self.quiz_cards):
             print("")
             print(str(index + 1) + "/" + str(self.__questions_per_quiz))
-            print(card.question_number + " " + wrapper.fill(text= card.question))
+            print( card.question_number + " " + wrapper.fill(text= card.question))
             print("-" * 40)
             for ans in card.answers:
                 print(wrapper.fill(text= ans))
@@ -150,3 +144,34 @@ class Quiz:
         print("=^=" * 40)
         print("The quiz is DONE! Good job!")
         print("Your score: " + str(correct_answers) + "/" + str(self.__questions_per_quiz))
+    def get_next_question(self):
+        index = session.get('question_index', 0)
+        if index < len(self.quiz_cards):
+            card = self.quiz_cards[index]
+            session['question_index'] = index + 1
+            return card
+        else:
+            return None
+
+    def get_previous_question(self):
+        index = session.get('question_index', 0)
+        if index > 0:
+            session['question_index'] = index - 1
+            return self.quiz_cards[index - 1]
+        else:
+            return None
+
+    def submit_answer(self, answer):
+        index = session.get('question_index', 0) - 1
+        if index >= 0 and index < len(self.quiz_cards):
+            card = self.quiz_cards[index]
+            if answer.upper() == card.correct_answer:
+                session['correct_answers'] += 1
+            session['answers'][index] = answer
+def get_previous_question_from_beginig(self):
+        index = session.get('question_index', 0)
+        if index > 0:
+            session['question_index'] = index - 1
+            return self.quiz_cards[1]
+        else:
+            return None

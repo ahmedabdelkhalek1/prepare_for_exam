@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6f7af1, #f5576c);
+            color: #fff;
+            overflow: hidden;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            max-height: 90%;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            overflow-y: auto;
+        }
+        .progress-bar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 10px;
+            background: #6f7af1;
+            width: calc((index + 1) / total * 100%);
+            transition: width 0.3s ease;
+                }
+            
+        
+        .progress-text {
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .question-box {
+            padding: 20px;
+            background: #fff;
+            color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            position: relative;
+        }
+        .answers-box {
+            margin-bottom: 20px;
+        }
+        .answers-box input[type="radio"] {
+            margin-right: 10px;
+        }
+        .answers-box label {
+            display: block;
+            padding: 10px;
+            background: #fff;
+            color: #333;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #f093fb;
+            background: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            max-width: 45%;
+        }
+        .buttons button:hover {
+            background: #ddd;
+        }
+        .note {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #fff;
+        }
+        .restart-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .restart-link {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background: #f5576c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .restart-link:hover {
+            background: #f093fb;
+        }
+        .hint-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            color: #fff;
+            background: #6f7af1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .hint-button:hover {
+            background: #f5576c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Add the progress bar -->
+        <div class="progress-bar">
+            <div class="progress"></div>
+            <div class="progress-text">Question {{ index + 1 }} of {{ total }}</div>
+        </div>
+
+        <div class="question-box">
+            <h1>{{ card.question_number }}. {{ card.question }}</h1>
+            <!-- Add the hint button -->
+            <button class="hint-button" onclick="toggleHint()">Hint</button>
+            <!-- Add the correct answer display area -->
+            <div id="correct-answer" style="display: none;">
+                <strong>Correct Answer:</strong> {{ card.correct_answer }}
+            </div>
+        </div>
+        <form method="post" action="{{ url_for('question') }}">
+            <div class="answers-box">
+                {% for ans in card.answers %}
+                <label>
+                    <input type="radio" name="answer" value="{{ loop.index }}" required>
+                    {{ ans }}
+                </label>
+                {% endfor %}
+            </div>
+            <div class="buttons">
+                {% if index > 0 %}
+                <button type="submit" name="action" value="previous">Previous</button>
+                {% else %}
+                <div></div> <!-- Empty div to keep button spacing consistent -->
+                {% endif %}
+                <button type="submit" name="action" value="next">Next</button>
+            </div>
+        </form>
+
+        {% if index == total - 1 %}
+        <p class="note">No more questions. Please proceed to results.</p>
+        {% endif %}
+    </div>
+    <script>
+        function toggleHint() {
+            var correctAnswer = document.getElementById("correct-answer");
+            if (correctAnswer.style.display === "none") {
+                correctAnswer.style.display = "block";
+            } else {
+                correctAnswer.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
