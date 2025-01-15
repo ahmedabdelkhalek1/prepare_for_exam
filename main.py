@@ -1,27 +1,30 @@
 from flask import Flask, session, redirect, url_for, render_template, request
-from quiz import CardList
-from quiz import Quiz  # Add this import statement at the top of your file
+from quiz import CardList,Quiz
+from flask_session import Session
 import random  # Add this line to import the random module
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong, unique secret key
-quiz = None
+
+
+app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
 
 RES_DIR = "./res"
+quiz = None
 
 @app.route('/')
 def home():
     return redirect(url_for('setup'))
 
 @app.route('/setup', methods=['GET', 'POST'])
-@app.route('/setup', methods=['GET', 'POST'])
 def setup():
     if request.method == 'POST':
         num_questions = int(request.form.get('num_questions'))
         show_answer_immediately = request.form.get('show_answer_immediately', 'y').lower()
+        global quiz
         session['num_questions'] = num_questions
         session['show_answer_immediately'] = show_answer_immediately
-        global quiz
         quiz = Quiz(RES_DIR, num_questions, show_answer_immediately)
         session['quiz_cards'] = [card.to_dict() for card in quiz.quiz_cards]
         session['question_index'] = 0
@@ -92,4 +95,4 @@ def restart_exam():
     return redirect(url_for('question'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='192.168.0.251' ,debug=True)
