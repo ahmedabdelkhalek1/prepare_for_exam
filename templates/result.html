@@ -1,0 +1,80 @@
+<!-- templates/result.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            color: #fff;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .circle {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background: #fff;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .buttons a, .restart-link {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #66a6ff;
+            background: #fff;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background 0.3s;
+            border: 1px solid #66a6ff;
+        }
+        .buttons a:hover, .restart-link:hover {
+            background: #ddd;
+        }
+        .restart-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz Completed</h1>
+        <div class="circle">{{ (correct / total * 100) | round(2) }}%</div>
+        <p>Your score: {{ correct }} / {{ total }}</p>
+        <div class="buttons">
+            <a href="{{ url_for('setup') }}">Take Another Quiz</a>
+            <a href="{{ url_for('check_answers') }}">Check Answers</a>
+        </div>
+        <div class="restart-button">
+            <a href="{{ url_for('restart_exam') }}" class="restart-link">Take the Same Exam Again</a>
+        </div>
+    </div>
+</body>
+</html>
