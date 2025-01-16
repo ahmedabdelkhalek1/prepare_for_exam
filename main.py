@@ -94,7 +94,7 @@ def restart_exam():
     session['answers'] = [None] * len(session.get('quiz_cards', []))
     return redirect(url_for('question'))
 # Path to the JSON file
-JSON_FILE_PATH = r'C:\Users\ahabdelkhalek\Downloads\tetris\ExamTopicsQuizMaker-static\questions.json'
+JSON_FILE_PATH = r'all_questions.json'
 
 @app.route('/study-quiz')
 def study_quiz():

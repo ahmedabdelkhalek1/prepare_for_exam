@@ -26,7 +26,20 @@ for filename in os.listdir(html_directory):
 
         for block in question_blocks:
             # Extract the question number
-            question_number = block.find_previous('h1').text.strip().split('#')[-1].strip()
+            question_number = block.find_previous('h1').text.strip()
+
+
+
+            # Clean the question_number to extract only the numeric part
+            try:
+                # Extract the numeric part using a more robust method
+                # Example: "Exam Associate Cloud Engineer topic 1 question 57 discussion" -> "57"
+                question_number = question_number.split("question")[-1].strip().split()[0]
+                question_number = int(question_number)
+            except (ValueError, IndexError):
+                # If conversion fails, skip this question or assign a default value
+                print(f"Warning: Invalid question_number '{question_number}'. Skipping this question.")
+                continue
 
             # Extract the question text
             question_text = block.find('p', class_='card-text').text.strip()
@@ -61,6 +74,9 @@ for filename in os.listdir(html_directory):
                 "answers": answers,
                 "correct_answer": correct_answer
             })
+
+# Sort the questions by question_number in ascending order
+all_questions.sort(key=lambda x: x['question_number'])
 
 # Convert the list to JSON
 json_output = json.dumps(all_questions, indent=4)
