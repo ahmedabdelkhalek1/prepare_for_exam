@@ -1,7 +1,7 @@
 from flask import Flask, session, redirect, url_for, render_template, request
 from quiz import CardList,Quiz
 from flask_session import Session
-import random  # Add this line to import the random module
+import random , os , json # Add this line to import the random module
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong, unique secret key
@@ -93,6 +93,18 @@ def restart_exam():
     session['correct_answers'] = 0
     session['answers'] = [None] * len(session.get('quiz_cards', []))
     return redirect(url_for('question'))
+# Path to the JSON file
+JSON_FILE_PATH = r'C:\Users\ahabdelkhalek\Downloads\tetris\ExamTopicsQuizMaker-static\questions.json'
 
+@app.route('/study-quiz')
+def study_quiz():
+    # Load the JSON file
+    if os.path.exists(JSON_FILE_PATH):
+        with open(JSON_FILE_PATH, 'r', encoding='utf-8') as file:
+            questions = json.load(file)
+        return render_template('study_quiz.html', questions=questions)
+    else:
+        return "No questions found. Please generate the JSON file first."
+    
 if __name__ == "__main__":
-    app.run(host='192.168.0.251' ,debug=True)
+    app.run(host='192.168.1.64' ,debug=True)

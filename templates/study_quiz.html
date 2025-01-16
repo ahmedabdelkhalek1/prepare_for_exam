@@ -1,0 +1,70 @@
+<!-- templates/study_quiz.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study for Quiz</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #4facfe;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+        .question-number {
+            font-weight: bold;
+            color: #4facfe;
+        }
+        .question-text {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .answers {
+            margin-left: 20px;
+        }
+        .correct-answer {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Study for Quiz</h1>
+        {% for question in questions %}
+        <div class="question">
+            <div class="question-number">Question {{ question.question_number }}</div>
+            <div class="question-text">{{ question.question }}</div>
+            <div class="answers">
+                <ul>
+                    {% for answer in question.answers %}
+                    <li>{{ answer }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="correct-answer">Correct Answer: {{ question.correct_answer }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

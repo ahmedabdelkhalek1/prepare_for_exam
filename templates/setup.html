@@ -47,6 +47,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s;
+            margin: 5px;
         }
         button:hover {
             background: #ddd;
@@ -60,6 +61,10 @@
             <label for="num_questions">How many questions do you want to have? (Max: 285)</label><br>
             <input type="number" name="num_questions" id="num_questions" min="1" max="285" required><br>
             <button type="submit">Start Quiz</button>
+        </form>
+        <br>
+        <form method="get" action="{{ url_for('study_quiz') }}">
+            <button type="submit">Study for Quiz</button>
         </form>
     </div>
 </body>
